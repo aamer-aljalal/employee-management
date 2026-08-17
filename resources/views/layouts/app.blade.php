@@ -170,6 +170,30 @@
             font-size: 0.9rem;
             pointer-events: none;
         }
+
+        /* Form Controls Styling */
+        .form-control, .form-select {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            color: #1e293b !important;
+            font-size: 0.95rem;
+            padding: 0.6rem 0.9rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd !important;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
+            background-color: #ffffff !important;
+        }
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+        .input-group-text {
+            background-color: #f8fafc !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #475569 !important;
+        }
         /* Flatpickr Custom Styling matching design mockup */
         .flatpickr-calendar {
             border-radius: 12px !important;

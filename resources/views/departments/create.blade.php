@@ -1,65 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid px-3" dir="rtl">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-xl-7">
-            
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="mb-0 fw-bold text-dark">إضافة قسم جديد</h4>
-                <a href="{{ route('departments.index') }}" class="btn btn-outline-secondary rounded-3 px-3">
-                    <i class="bi bi-arrow-right ms-1"></i> رجوع
-                </a>
+<div class="container-fluid px-4 py-4" dir="rtl">
+
+    <div class="custom-card mb-4 w-100">
+        <div class="custom-card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-building fs-5 text-primary"></i>
+                <h5 class="mb-0 fw-bold text-dark">إضافة قسم جديد</h5>
             </div>
+            <a href="{{ route('departments.index') }}" class="btn btn-outline-secondary btn-sm rounded-2 px-3 fw-semibold">
+                <i class="bi bi-arrow-right me-1"></i> رجوع للأقسام
+            </a>
+        </div>
 
-            <div class="card border-0 shadow-sm rounded-4 w-100 overflow-hidden">
-                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
-                    <h6 class="mb-0 fw-bold text-primary"><i class="bi bi-info-circle me-1"></i> تفاصيل القسم</h6>
+        <div class="p-4">
+            <form action="{{ route('departments.store') }}" method="POST">
+                @csrf
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label for="name" class="form-label fw-bold text-dark">اسم القسم <span class="text-danger">*</span></label>
+                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="مثال: الموارد البشرية" required>
+                        @error('name')
+                            <div class="invalid-feedback fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark d-block">حالة القسم</label>
+                        <div class="form-check form-switch d-flex align-items-center gap-2 pt-2">
+                            <input class="form-check-input m-0 ms-2" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }} style="width: 2.8em; height: 1.4em; cursor: pointer;">
+                            <label class="form-check-label fw-semibold text-dark m-0" for="is_active" style="cursor: pointer;">
+                                تفعيل القسم (نشط)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="description" class="form-label fw-bold text-dark">الوصف</label>
+                        <textarea name="description" id="description" rows="4" class="form-control @error('description') is-invalid @enderror" placeholder="اكتب وصفاً مفصلاً عن مهام هذا القسم وتخصصاته...">{{ old('description') }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
-                
-                <div class="card-body p-4">
-                    <form action="{{ route('departments.store') }}" method="POST">
-                        @csrf
 
-                        <div class="mb-4">
-                            <label for="name" class="form-label fw-bold text-secondary">اسم القسم <span class="text-danger">*</span></label>
-                            <input type="text" name="name" id="name" class="form-control form-control-lg bg-light border-0 rounded-3 @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="مثال: الموارد البشرية" required>
-                            @error('name')
-                                <div class="invalid-feedback fw-bold">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="description" class="form-label fw-bold text-secondary">الوصف</label>
-                            <textarea name="description" id="description" rows="3" class="form-control bg-light border-0 rounded-3 @error('description') is-invalid @enderror" placeholder="أدخل وصف القسم...">{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback fw-bold">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4 bg-light p-3 rounded-3 d-flex align-items-center justify-content-between">
-                            <div>
-                                <label class="fw-bold mb-0 text-dark" for="is_active">حالة القسم</label>
-                                <p class="text-muted small mb-0">حدد ما إذا كان هذا القسم نشطاً حالياً</p>
-                            </div>
-                            <div class="form-check form-switch m-0" style="transform: scale(1.3); margin-left: 0.5rem !important;">
-                                <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-                            </div>
-                        </div>
-
-                        <hr class="text-muted opacity-25 my-4">
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('departments.index') }}" class="btn btn-light rounded-3 px-4 fw-bold text-muted">إلغاء</a>
-                            <button type="submit" class="btn btn-primary rounded-3 px-4 fw-bold">
-                                <i class="bi bi-check2-circle ms-1"></i> حفظ القسم
-                            </button>
-                        </div>
-                    </form>
+                <div class="d-flex align-items-center gap-2 pt-4 mt-4 border-top">
+                    <button type="submit" class="btn btn-primary rounded-2 px-4 py-2 fw-semibold">
+                        <i class="bi bi-check-lg me-1"></i> حفظ القسم
+                    </button>
+                    <a href="{{ route('departments.index') }}" class="btn btn-light border rounded-2 px-4 py-2 text-secondary fw-semibold">إلغاء</a>
                 </div>
-            </div>
-
+            </form>
         </div>
     </div>
+
 </div>
 @endsection

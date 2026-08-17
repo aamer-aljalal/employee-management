@@ -1,117 +1,103 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid px-3" dir="rtl">
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-xl-9">
-            
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="mb-0 fw-bold text-dark">تعديل الموظف: {{ $employee->name }}</h4>
-                <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary rounded-3 px-3">
-                    <i class="bi bi-arrow-right ms-1"></i> رجوع
-                </a>
+<div class="container-fluid px-4 py-4" dir="rtl">
+
+    <div class="custom-card mb-4 w-100">
+        <div class="custom-card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-pencil-square fs-5 text-primary"></i>
+                <h5 class="mb-0 fw-bold text-dark">تعديل بيانات الموظف: {{ $employee->name }}</h5>
             </div>
+            <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary btn-sm rounded-2 px-3 fw-semibold">
+                <i class="bi bi-arrow-right me-1"></i> رجوع للموظفين
+            </a>
+        </div>
 
-            <div class="card border-0 shadow-sm rounded-4 w-100 overflow-hidden mb-4">
-                <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
-                    <h6 class="mb-0 fw-bold text-primary"><i class="bi bi-person-badge me-1"></i> تحديث بيانات الموظف</h6>
+        <div class="p-4">
+            <form action="{{ route('employees.update', $employee->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <label for="name" class="form-label fw-bold text-dark">اسم الموظف <span class="text-danger">*</span></label>
+                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $employee->name) }}" required>
+                        @error('name')
+                            <div class="invalid-feedback fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="department_id" class="form-label fw-bold text-dark">القسم <span class="text-danger">*</span></label>
+                        <select name="department_id" id="department_id" class="form-select @error('department_id') is-invalid @enderror" required>
+                            <option value="">-- اختر القسم --</option>
+                            @foreach ($departments as $dept)
+                                <option value="{{ $dept->id }}" {{ old('department_id', $employee->department_id) == $dept->id ? 'selected' : '' }}>
+                                    {{ $dept->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('department_id')
+                            <div class="invalid-feedback fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="job_title" class="form-label fw-bold text-dark">المسمى الوظيفي <span class="text-danger">*</span></label>
+                        <input type="text" name="job_title" id="job_title" class="form-control @error('job_title') is-invalid @enderror" value="{{ old('job_title', $employee->job_title) }}" required>
+                        @error('job_title')
+                            <div class="invalid-feedback fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="phone" class="form-label fw-bold text-dark">رقم الهاتف</label>
+                        <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $employee->phone) }}">
+                        @error('phone')
+                            <div class="invalid-feedback fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="salary" class="form-label fw-bold text-dark">الراتب (اختياري)</label>
+                        <div class="input-group">
+                            <input type="number" step="0.01" name="salary" id="salary" class="form-control @error('salary') is-invalid @enderror" value="{{ old('salary', $employee->salary) }}">
+                            <span class="input-group-text fw-bold">ر.س</span>
+                        </div>
+                        @error('salary')
+                            <div class="invalid-feedback d-block fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="hire_date" class="form-label fw-bold text-dark">تاريخ التعيين</label>
+                        <input type="text" name="hire_date" id="hire_date" class="form-control datepicker @error('hire_date') is-invalid @enderror" value="{{ old('hire_date', $employee->hire_date ? \Carbon\Carbon::parse($employee->hire_date)->format('Y-m-d') : '') }}">
+                        @error('hire_date')
+                            <div class="invalid-feedback fw-semibold">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark d-block">حالة الموظف</label>
+                        <div class="form-check form-switch d-flex align-items-center gap-2 pt-1">
+                            <input class="form-check-input m-0 ms-2" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $employee->is_active) ? 'checked' : '' }} style="width: 2.8em; height: 1.4em; cursor: pointer;">
+                            <label class="form-check-label fw-semibold text-dark m-0" for="is_active" style="cursor: pointer;">
+                                الموظف (على رأس العمل)
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="card-body p-4">
-                    <form action="{{ route('employees.update', $employee->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
 
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="name" class="form-label fw-bold text-secondary">اسم الموظف <span class="text-danger">*</span></label>
-                                <input type="text" name="name" id="name" class="form-control form-control-lg bg-light border-0 rounded-3 @error('name') is-invalid @enderror" value="{{ old('name', $employee->name) }}" required>
-                                @error('name')
-                                    <div class="invalid-feedback fw-bold">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="department_id" class="form-label fw-bold text-secondary">القسم <span class="text-danger">*</span></label>
-                                <select name="department_id" id="department_id" class="form-select form-select-lg bg-light border-0 rounded-3 @error('department_id') is-invalid @enderror" required>
-                                    <option value="">-- اختر القسم --</option>
-                                    @foreach ($departments as $dept)
-                                        <option value="{{ $dept->id }}" {{ old('department_id', $employee->department_id) == $dept->id ? 'selected' : '' }}>
-                                            {{ $dept->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('department_id')
-                                    <div class="invalid-feedback fw-bold">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="job_title" class="form-label fw-bold text-secondary">المسمى الوظيفي <span class="text-danger">*</span></label>
-                                <input type="text" name="job_title" id="job_title" class="form-control form-control-lg bg-light border-0 rounded-3 @error('job_title') is-invalid @enderror" value="{{ old('job_title', $employee->job_title) }}" required>
-                                @error('job_title')
-                                    <div class="invalid-feedback fw-bold">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            
-                            <div class="col-md-6 mb-4">
-                                <label for="phone" class="form-label fw-bold text-secondary">رقم الهاتف</label>
-                                <input type="text" name="phone" id="phone" class="form-control form-control-lg bg-light border-0 rounded-3 @error('phone') is-invalid @enderror" value="{{ old('phone', $employee->phone) }}" dir="ltr" style="text-align: right;">
-                                @error('phone')
-                                    <div class="invalid-feedback fw-bold">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label for="salary" class="form-label fw-bold text-secondary">الراتب (اختياري)</label>
-                                <div class="input-group input-group-lg">
-                                    <input type="number" step="0.01" name="salary" id="salary" class="form-control bg-light border-0 rounded-end-3 @error('salary') is-invalid @enderror" value="{{ old('salary', $employee->salary) }}" dir="ltr" style="text-align: right;">
-                                    <span class="input-group-text bg-light border-0 rounded-start-3 text-secondary">ر.س</span>
-                                </div>
-                                @error('salary')
-                                    <div class="invalid-feedback fw-bold d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <label for="hire_date" class="form-label fw-bold text-secondary">تاريخ التعيين</label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text bg-light border-0 rounded-end-3 text-secondary"><i class="bi bi-calendar3"></i></span>
-                                    <input type="text" name="hire_date" id="hire_date" class="form-control datepicker bg-light border-0 rounded-start-3 @error('hire_date') is-invalid @enderror" value="{{ old('hire_date', $employee->hire_date ? \Carbon\Carbon::parse($employee->hire_date)->format('Y-m-d') : '') }}">
-                                </div>
-                                @error('hire_date')
-                                    <div class="invalid-feedback fw-bold d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-4 bg-light p-3 rounded-3 d-flex align-items-center justify-content-between">
-                            <div>
-                                <label class="fw-bold mb-0 text-dark" for="is_active">حالة الموظف</label>
-                                <p class="text-muted small mb-0">حدد ما إذا كان هذا الموظف على رأس العمل حالياً</p>
-                            </div>
-                            <div class="form-check form-switch m-0" style="transform: scale(1.3); margin-left: 0.5rem !important;">
-                                <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $employee->is_active) ? 'checked' : '' }}>
-                            </div>
-                        </div>
-
-                        <hr class="text-muted opacity-25 my-4">
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('employees.index') }}" class="btn btn-light rounded-3 px-4 fw-bold text-muted">إلغاء</a>
-                            <button type="submit" class="btn btn-primary rounded-3 px-4 fw-bold">
-                                <i class="bi bi-check2-circle ms-1"></i> تحديث الموظف
-                            </button>
-                        </div>
-                    </form>
+                <div class="d-flex align-items-center gap-2 pt-4 mt-4 border-top">
+                    <button type="submit" class="btn btn-primary rounded-2 px-4 py-2 fw-semibold">
+                        <i class="bi bi-check-lg me-1"></i> تحديث البيانات
+                    </button>
+                    <a href="{{ route('employees.index') }}" class="btn btn-light border rounded-2 px-4 py-2 text-secondary fw-semibold">إلغاء</a>
                 </div>
-            </div>
-
+            </form>
         </div>
     </div>
+
 </div>
 @endsection
