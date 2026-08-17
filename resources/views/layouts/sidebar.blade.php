@@ -31,7 +31,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link link-dark rounded-3 d-flex align-items-center py-2 px-3">
+            <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }} rounded-3 d-flex align-items-center py-2 px-3">
                 <i class="bi bi-person me-2 fs-5"></i>
                 <span>الملف الشخصي</span>
             </a>
@@ -41,11 +41,11 @@
 
     <div class="mt-auto pt-3 border-top">
         <a href="{{ route('logout') }}"
-           class="nav-link rounded-3 d-flex align-items-center py-2 px-3 btn-logout"
-           style="background-color: #f64f4fff; color: #000; font-weight: 500; border: 1px solid #ff0000ff;"
+           class="nav-link rounded-3 d-flex align-items-center py-2 px-3 btn-logout text-danger"
+           style="background-color: #fef2f2 !important; border: 1px solid #fecaca !important; font-weight: 600;"
            onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();">
-            <i class="bi bi-box-arrow-right me-2 fs-5 text-dark fw-bold"></i>
-            <span class="text-dark fw-bold">تسجيل الخروج</span>
+            <i class="bi bi-box-arrow-right me-2 fs-5 text-danger"></i>
+            <span class="text-danger fw-bold">تسجيل الخروج</span>
         </a>
         <form id="sidebar-logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
             @csrf

@@ -185,7 +185,12 @@
                             </a>
                         @endif
                     </div>
-                    <input id="password" type="password" class="login-input @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="••••••••">
+                    <div class="position-relative">
+                        <input id="password" type="password" class="login-input @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="••••••••" style="padding-left: 2.75rem;">
+                        <button type="button" class="btn btn-link position-absolute top-50 translate-middle-y text-secondary p-0 text-decoration-none toggle-password" data-target="password" style="left: 0.75rem; z-index: 10;">
+                            <i class="bi bi-eye fs-5"></i>
+                        </button>
+                    </div>
                     @error('password')
                         <span class="text-danger d-block fw-bold small mt-1" role="alert">
                             <strong>{{ $message }}</strong>
@@ -213,5 +218,25 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
